@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -9,5 +9,5 @@
     "noEmit": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["src", "server", "../node_modules/@openflow/protocol/global.d.ts", "types/assets.d.ts"]
+  "include": ["src", "server", "tools", "node_modules/@openflow/protocol/global.d.ts", "types/assets.d.ts"]
 }

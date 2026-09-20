@@ -43,7 +43,7 @@ const ROOT = path.resolve(here, '../dist');
  * **One address, in both modes**, and that is the point rather than a
  * convenience. This module's whole premise is that somebody reads a URL out to
  * the room; a second URL that behaves differently undermines it, and the one
- * anybody reaches for is this server's — which serves `chart/dist` and so shows
+ * anybody reaches for is this server's — which serves `dist` and so shows
  * an edit only after a rebuild. Working on the page then looks exactly like
  * hot reload being broken.
  *

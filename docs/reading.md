@@ -152,7 +152,7 @@ bar count to sit inside it, which is the pair of facts somebody counting bars ne
 far round, and how far round *of what*. A four-bar loop and a sixteen-bar loop are the same
 arc at the same phase.
 
-The count is `loopBars` from `core/`, which is where the arithmetic and its tests live —
+The count is `loopBars` from `@openflow/core`, which is where the arithmetic and its tests live —
 including the rounding that stops a loop the LOM reports as 7.999 beats becoming a one-bar
 loop. A clip that isn't looping fills once and shows a countdown instead; one being
 recorded into shows its length so far. A group track is left out, because it carries no
@@ -302,7 +302,7 @@ both: one to learn the shape of a song, the other to get through the next bar.
 
 The scheme is the rainbow over the seven notes of the scale, with each accidental the blend
 of the two it sits between — 1 red, 3 yellow, 5 blue, 7 violet. It lives in
-[`core/src/chords.ts`](../../core/docs/chords.md) with the table, and with the version that
+[`chords.ts` in `@openflow/core`](https://github.com/openflowfm/core/blob/main/docs/chords.md) with the table, and with the version that
 went round the circle of fifths first and why it was worse.
 What matters here is that it is **the same twelve colours in every key**: the root of a song
 in Gm is the same red as the root of a song in D, so somebody who has learned the scheme
@@ -359,7 +359,7 @@ across the whole loop, which looks exactly like a playhead that was never wired 
 
 **Chords for everybody who is not the bass player.** The roll is one track, and the keys
 player's question — what is the harmony — is a different one. The inference that used to
-answer it still exists in [`core/src/chords.ts`](../../core/docs/chords.md) with its tests
+answer it still exists in [`chords.ts` in `@openflow/core`](https://github.com/openflowfm/core/blob/main/docs/chords.md) with its tests
 and no caller. What it needs before it comes back is somewhere to be *right*: a set that
 wrote its changes down would need no inference at all and could never disagree with itself.
 The convention question comes before the code — whether they belong in a track of their own

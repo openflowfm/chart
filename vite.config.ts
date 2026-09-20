@@ -5,13 +5,12 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
-// The chart builds to `chart/dist`, which `server/index.ts` serves. A separate
-// build from set[flow] because it is a separate app for a different pair of eyes —
-// nothing here ships inside the device.
+// The chart builds to `dist/`, which `server/index.ts` serves. Nothing here
+// ships inside the device.
 //
-// The dev port follows set[flow]'s at +400, continuing the offsets in
-// widgets/docs/bench.md: set 5173, widget bench +100, device bench +200, visuals
-// +300. A worktree that moves OPENFLOW_PORT_BASE takes all five with it.
+// The dev port follows set[flow]'s at +400, continuing the suite's offsets:
+// set 5173, widget bench +100, device bench +200, visuals +300. A checkout that
+// moves OPENFLOW_PORT_BASE takes all five with it.
 const SET_PORT = Number(process.env.OPENFLOW_PORT_BASE) || 5173;
 const PORT = Number(process.env.OPENFLOW_CHART_UI_PORT) || SET_PORT + 400;
 const SERVER = process.env.OPENFLOW_CHART || 'http://127.0.0.1:18000';
@@ -19,7 +18,6 @@ const SERVER = process.env.OPENFLOW_CHART || 'http://127.0.0.1:18000';
 export default defineConfig({
   root: here,
   plugins: [react()],
-  cacheDir: path.resolve(here, '../node_modules/.vite/chart'),
   build: {
     outDir: path.resolve(here, 'dist'),
     emptyOutDir: true,
@@ -45,8 +43,6 @@ export default defineConfig({
     // A phone can reach the dev server too, which is the only way to work on
     // this on the thing it is for.
     host: true,
-    // core/ lives outside this root, and Vite refuses paths above it.
-    fs: { allow: [path.resolve(here, '..')] },
     // Dev serves the page; the chart server stays the only thing talking to the
     // bridge. `text/event-stream` streams through untouched.
     proxy: {

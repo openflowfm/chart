@@ -70,25 +70,24 @@ fifteen seconds and whatever the band actually did. The heartbeat is not decorat
 venue's captive network may put a proxy between the phone and the laptop, and a buffered
 or idle-closed event stream looks exactly like a chart that has frozen.
 
-## Why `core/` is imported for one constant and nothing else
+## Why the server is bundled
 
-`chart/server/chart.ts` reads a scene's role and key off `SetModel.factsByScene` rather
-than parsing a name, and that is a design rule — see [reading the set](reading.md). There
-is a mechanical reason it could not do otherwise even if it wanted to.
+`server/chart.ts` reads a scene's role and key off `SetModel.factsByScene` rather than
+parsing a name, and that is a design rule — see [reading the set](reading.md). The model
+comes from `@openflow/core`, and that import is what decides how the server runs.
 
-**`core/` spells its internal imports the TypeScript way** — `import { … } from
-'./derive.js'`, a specifier naming a file that does not exist until something compiles it.
-Bundlers all resolve that to `derive.ts`; **Node's type stripping does not**, and running
-`node chart/server/index.ts` fails on the first such hop. So a Node process can import a
-`core/` file only when that file imports nothing itself, which is true of `livePalette.ts`
-and of very little else.
+**Node runs `.ts` directly, but refuses to strip types from anything under
+`node_modules`** — and core is installed there as TypeScript source, exactly as every app
+consumes it. So `node server/index.ts` fails on the first hop into core. The answer is the
+same as the device's: [`tools/server.ts`](../tools/server.ts) bundles the server with
+esbuild into `dist/server/index.js`, and that is what `npm start` runs and what
+`npm run dev` restarts on every rebuild. Bundling doesn't care where an import lives.
 
-This is why visual[flow]'s [`server/show.ts`](https://github.com/openflowfm/visuals/blob/main/server/show.ts)
-carries a private `roleOf` regex rather than calling
-`roles.ts`. It is a real constraint on any Node-side client of this project, and the answer
-taken here was to put the per-scene facts on the wire instead of finding a way to re-read
-the names — the mapping being read exactly once is the better property anyway, and it is
-the one `SetModel` exists for.
+It is a real constraint on any Node-side client of this suite, and the reason visual[flow]'s
+[`server/show.ts`](https://github.com/openflowfm/visuals/blob/main/server/show.ts) once
+carried a private `roleOf` regex rather than calling `roles.ts`. The answer taken here was
+to put the per-scene facts on the wire instead of re-reading the names — the mapping being
+read exactly once is the better property anyway.
 
 ## One address, in dev too
 
