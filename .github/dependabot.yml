@@ -6,3 +6,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    # Vitest and its coverage provider pin each other as peers; bumped apart,
+    # npm ci fails before a test runs.
+    groups:
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
