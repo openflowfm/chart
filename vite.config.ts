@@ -8,11 +8,11 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 // The chart builds to `dist/`, which `server/index.ts` serves. Nothing here
 // ships inside the device.
 //
-// The dev port follows set[flow]'s at +400, continuing the suite's offsets:
-// set 5173, widget bench +100, device bench +200, visuals +300. A checkout that
-// moves OPENFLOW_PORT_BASE takes all five with it.
-const SET_PORT = Number(process.env.OPENFLOW_PORT_BASE) || 5173;
-const PORT = Number(process.env.OPENFLOW_CHART_UI_PORT) || SET_PORT + 400;
+// No dev port is fixed or assumed: many projects and worktrees run side by
+// side, so the page takes `PORT` when a launcher picked one and otherwise port
+// 0, a free one from the OS. `npm run dev` (tools/dev.ts) settles the port
+// first and hands it to both Vite and the chart server.
+const PORT = Number(process.env.PORT) || 0;
 const SERVER = process.env.OPENFLOW_CHART || 'http://127.0.0.1:18000';
 
 export default defineConfig({
@@ -26,7 +26,9 @@ export default defineConfig({
   },
   server: {
     port: PORT,
-    strictPort: true,
+    // A port somebody named is the one they will dial, so slipping to the next
+    // would be wrong; with none named, the OS's choice is already free.
+    strictPort: PORT > 0,
     /**
      * Dial this port for hot reload, whatever port served the page.
      *
@@ -37,9 +39,11 @@ export default defineConfig({
      * so it works from a phone on the LAN exactly as it does from localhost.
      *
      * Setting it changes nothing when the page is served from Vite directly:
-     * this is already the port the client would have picked.
+     * this is already the port the client would have picked. With no port
+     * named it is left unset, and the client dials whatever served the page —
+     * right for `npm run dev:ui`; `npm run dev` always names one.
      */
-    hmr: { clientPort: PORT },
+    ws: PORT > 0 ? { clientPort: PORT } : {},
     // A phone can reach the dev server too, which is the only way to work on
     // this on the thing it is for.
     host: true,

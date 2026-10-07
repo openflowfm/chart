@@ -20,7 +20,7 @@ cd chart
 npm ci
 npm run build    # the page into dist/, and the server bundled beside it
 npm start        # the server on :18000, serving dist/ and following the bridge
-npm run dev      # the server rebuilt and restarted on change, and Vite on :5573 for the page
+npm run dev      # the server rebuilt and restarted on change, and Vite on a free port for the page
 ```
 
 The one thing it depends on at runtime is the bridge: **SessionBridge**, the Max for Live
@@ -34,7 +34,7 @@ rather than run from source, because Node will not strip types from `@openflow/c
 |---|---|
 | `npm run build` | `dist/` — the page, then `dist/server/index.js` |
 | `npm start` | the built server, on the LAN |
-| `npm run dev` | the server watch loop and the Vite dev server together; the page is proxied through `:18000` so a phone uses one address |
+| `npm run dev` | the Vite dev server, then the server watch loop pointed at it ([`tools/dev.ts`](tools/dev.ts)); the page is proxied through `:18000` so a phone uses one address |
 | `npm run typecheck` | `src/`, `server/` and `tools/` |
 | `npm test` | the server's unit tests — `chart.ts`, `loops.ts`, `bassline.ts` |
 
@@ -63,8 +63,8 @@ the bridge, and this reads them off `SetModel`.
 ```sh
 npm run dev                # everything, this included. Use :18000 — it proxies the page
                            # from Vite, HMR socket and all, so one address works in dev too
-npm run dev:chart          # the server alone, :18000, under node --watch
-npm run dev:chart-ui       # the page alone with HMR, :5573
+npm run dev:server         # the server alone, :18000, rebuilt and restarted on change
+npm run dev:ui             # the page alone with HMR, on $PORT or a free port
 npm run build:chart        # the page into chart/dist, which the server serves when
                            # OPENFLOW_CHART_UI is unset — which is how it ships
 ```
@@ -75,7 +75,7 @@ out; everyone else types it once and adds it to their home screen.
 | | | |
 |---|---|---|
 | server | 18000 | `OPENFLOW_CHART_PORT`, `OPENFLOW_CHART_HOST` |
-| page (dev) | UI + 400 | `OPENFLOW_CHART_UI_PORT` |
+| page (dev) | a free port, never a fixed one | `PORT` |
 | bridge it follows | `ws://127.0.0.1:17800/ws` | `OPENFLOW_BRIDGE_WS` |
 | the page, in dev | `chart/dist` unless set | `OPENFLOW_CHART_UI` |
 

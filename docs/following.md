@@ -97,13 +97,19 @@ is this one. It is the address the server prints, and the address that makes sen
 phone.
 
 So `OPENFLOW_CHART_UI` points it at the Vite dev server and every page request is proxied there,
-**including the HMR websocket** through the same port. Without the socket the page would
+and **the HMR websocket** is pointed at Vite too (below). Without the socket the page would
 load from here, look right, and never update — the same failure arriving by a different
 route. `npm run dev` sets it; unset, which is how it ships, nothing is proxied.
 
-The proxy falls back to `dist` when nothing answers, and that is not padding: `npm run dev`
-starts this and Vite together under `concurrently`, so for the first moment of a session
-there is nothing on the other end.
+Vite has no fixed port — it takes `PORT` when a launcher picked one, otherwise a free one
+from the OS — so nothing hard-codes its address. `npm run dev` ([`tools/dev.ts`](../tools/dev.ts))
+settles the port, starts Vite on it, and only then starts this with `OPENFLOW_CHART_UI`
+naming where Vite really is. The same port is Vite's HMR client port, so the page's
+socket dials Vite directly from whichever host served the page.
+
+The proxy falls back to `dist` when nothing answers, and that is not padding: Vite can be
+stopped or restarted under a running server, and `dev:server` can be pointed at a Vite
+that is not up yet.
 
 `dev:chart` runs under `node --watch`, so editing anything in `server/` restarts it. SSE
 survives that on its own — `EventSource` reconnects, and the frames are re-sent on connect.
