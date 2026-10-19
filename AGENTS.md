@@ -15,7 +15,9 @@ Read [`README.md`](README.md) as the topic index, then only the docs matching th
 - A change to how a feature works updates that feature's topic doc in the same commit.
   A doc that drifts is worse than none, because it's believed.
 
-Run `npm ci`, `npm run typecheck`, `npm test` and `npm run build`. `npm run dev` needs a
+Run `npm ci` once in a fresh clone. After a change, run only `npm run build` and
+`npm run typecheck`. `npm test` runs in a test pass (when asked, or before a PR) and on CI;
+tests are written to a spec as their own step, not as part of a change. `npm run dev` needs a
 running bridge — [openflowfm/bridge](https://github.com/openflowfm/bridge) — and a phone
 on the same wifi is the only way to check what this is for.
 
